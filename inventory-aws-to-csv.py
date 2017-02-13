@@ -13,12 +13,27 @@ parser.add_argument("--globals", help="returns global data if true", type=bool)
 args = parser.parse_args()
 profile = args.profile
 
+#network
+## vpc
+## vpn
+## route tables
+## subnets
 
 #compute
+## ec2
+## ecs
+## asg
+## lambda
+## elb
+## alb
 
 #storage
+def aws_storage(aws):
+    s3_buckets(aws)
+    s3_objects(aws)
 
-
+## ebs
+## efs
 ##s3
 def s3_buckets(aws):
     "This prints a count of buckets on an account"
@@ -45,10 +60,20 @@ def s3_objects(aws):
     return
 
 #paas
+## cloudfront count
+## elk count
+## rds
+## aurora
+## dynamodb
 
 #security
+## sg count
+## sg rules
+## nacl count
+## nacl rules
+## waf count
+
 
 if __name__ == '__main__':
     aws = boto3.session.Session(profile_name=profile)
-    s3_buckets(aws)
-    s3_objects(aws)
+    aws_storage(aws)
