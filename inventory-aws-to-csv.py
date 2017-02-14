@@ -17,6 +17,8 @@ parser.add_argument("--storage", type=bool, default=False, help="True enables co
 
 # Specific api intensive modules
 parser.add_argument("--s3objects", type=bool, default=False, help="True enables counting s3 objects, default = false")
+parser.add_argument("--sgRules", type=bool, default=False, help="True enables counting sg rules, default = false")
+parser.add_argument("--naclRules", type=bool, default=False, help="True enables counting nacl rules, default = false")
 
 args = parser.parse_args()
 profile = args.profile
@@ -164,11 +166,69 @@ def cf_distributions(aws):
 # SECURITY
 def aws_security(aws,regions):
     "This kicks off all security inventory functions"
-## sg count
-## sg rules
-## nacl count
-## nacl rules
-## waf count
+    security_groups(aws,regions)
+    if args.sgRules:
+        security_group_rules(aws,regions)
+    nacls(aws,regions)
+    if args.naclRules:
+        nacl_rules(aws,regions)
+    wafs(aws,regions)
+
+def security_groups(aws,regions):
+    "Prints count of security groups"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_security_groups()
+            print("sg.{}:".format(region), len(response["SecurityGroups"]))
+        except:
+            print("sg.{}: unsupported".format(region))
+    return
+
+def security_group_rules(aws,regions):
+    "Prints count of security groups"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_security_groups()
+            count = 0
+            for sg in response["SecurityGroups"]:
+                count += (len(sg["IpPermissions"]) + len(sg["IpPermissionsEgress"]))
+            print("sg.rules.{}:".format(region), count)
+        except:
+            print("sg.rules.{}: unsupported".format(region))
+    return
+
+def nacls(aws,regions):
+    "Prints count of nacls"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_network_acls()
+            print("nacl.{}:".format(region), len(response["NetworkAcls"]))
+        except:
+            print("nacl.{}: unsupported".format(region))
+    return
+
+def nacl_rules(aws,regions):
+    "Prints count of security groups"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_network_acls()
+            count = 0
+            for nacl in response["NetworkAcls"]:
+                count += len(nacl["Entries"])
+            print("nacl.rules.{}:".format(region), count)
+        except:
+            print("nacl.rules.{}: unsupported".format(region))
+    return
+
+def wafs(aws,regions):
+    "Prints count of wafs"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('waf').list_web_acls()
+            print("waf.{}:".format(region), len(response["WebACLs"]))
+        except:
+            print("waf.{}: unsupported".format(region))
+    return
 
 
 # STORAGE
