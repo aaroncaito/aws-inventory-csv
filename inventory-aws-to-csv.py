@@ -23,10 +23,12 @@ profile = args.profile
 #compute
 def aws_compute(aws,regions):
     "This kicks off all compute inventory functions"
-    # ec2_instances(aws,regions)
-    # ecs_clusters(aws,regions)
-    # auto_scaling_groups(aws,regions)
+    ec2_instances(aws,regions)
+    ecs_clusters(aws,regions)
+    auto_scaling_groups(aws,regions)
     lambda_functions(aws,regions)
+    elastic_loadbalancers(aws,regions)
+    application_loadbalancers(aws,regions)
 
 def ec2_instances(aws,regions):
     "This prints out count of ec2 instances on an account"
@@ -67,8 +69,26 @@ def lambda_functions(aws,regions):
             print("lambda.functions.{}: unsupported".format(region))
     return
 
-## elb
-## alb
+def elastic_loadbalancers(aws,regions):
+    "Prints count of classic elb"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('elb').describe_load_balancers()
+            print("elb.{}:".format(region), len(response["LoadBalancerDescriptions"]))
+        except:
+            print("elb.{}: unsupported".format(region))
+    return
+
+def application_loadbalancers(aws,regions):
+    "Prints count of alb"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('elbv2').describe_load_balancers()
+            print("alb.{}:".format(region), len(response["LoadBalancers"]))
+        except:
+            print("alb.{}: unsupported".format(region))
+    return
+
 
 #storage
 def aws_storage(aws):
