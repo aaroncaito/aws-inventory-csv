@@ -131,7 +131,7 @@ def route_tables(aws,regions):
     return
 
 def subnets(aws,regions):
-    "Prints count of route tables"
+    "Prints count of subnets"
     for region in regions:
         try:
             response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_subnets()
@@ -144,7 +144,17 @@ def subnets(aws,regions):
 # PAAS
 def aws_paas(aws,regions):
     "This kicks off all paas inventory functions"
-## cloudfront count
+    cf_distributions(aws)
+
+def cf_distributions(aws):
+    "Prints count of cloudfront distributions"
+    try:
+        response = boto3.session.Session(profile_name=profile).client('cloudfront').list_distributions()["DistributionList"]
+        print("cf_distributions:", len(response["Items"]))
+    except:
+        print("cf_distributions.{}: unsupported".format(region))
+    return
+
 ## elk count
 ## rds
 ## aurora
