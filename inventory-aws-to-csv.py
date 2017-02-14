@@ -23,8 +23,10 @@ profile = args.profile
 #compute
 def aws_compute(aws,regions):
     "This kicks off all compute inventory functions"
-    #ec2_instances(aws,regions)
-    ecs_clusters(aws,regions)
+    # ec2_instances(aws,regions)
+    # ecs_clusters(aws,regions)
+    # auto_scaling_groups(aws,regions)
+    lambda_functions(aws,regions)
 
 def ec2_instances(aws,regions):
     "This prints out count of ec2 instances on an account"
@@ -44,8 +46,27 @@ def ecs_clusters(aws,regions):
         except:
             print("ecs.clusters.{}: unsupported".format(region))
     return
-## asg
-## lambda
+
+def auto_scaling_groups(aws,regions):
+    "Prints out a count of autoscale groups"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('autoscaling').describe_auto_scaling_groups()
+            print("asg.groups.{}:".format(region), len(response["AutoScalingGroups"]))
+        except:
+            print("asg.groups.{}: none".format(region))
+    return
+
+def lambda_functions(aws,regions):
+    "Prints count of lambda functions"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('lambda').list_functions()
+            print("lambda.functions.{}:".format(region), len(response["Functions"]))
+        except:
+            print("lambda.functions.{}: unsupported".format(region))
+    return
+
 ## elb
 ## alb
 
