@@ -9,10 +9,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--profile", help="specify aws profile to use")
 
 # Logical groupings
-parser.add_argument("--compute", type=bool, default=False, help="True enables counting compute resources
-parser.add_argument("--network", type=bool, default=False, help="True enables counting network resources
-parser.add_argument("--paas", type=bool, default=False, help="True enables counting paas resources
-parser.add_argument("--security", type=bool, default=False, help="True enables counting security resources
+parser.add_argument("--compute", type=bool, default=False, help="True enables counting compute resources")
+parser.add_argument("--network", type=bool, default=False, help="True enables counting network resources")
+parser.add_argument("--paas", type=bool, default=False, help="True enables counting paas resources")
+parser.add_argument("--security", type=bool, default=False, help="True enables counting security resources")
 parser.add_argument("--storage", type=bool, default=False, help="True enables counting storage resources")
 
 # Specific api intensive modules
