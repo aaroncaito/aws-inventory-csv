@@ -23,13 +23,15 @@ cd aws-inventory/
 
 The following options are available in the script passed as arguments:
 
-* Profile = The aws profile to consume from your `~/.aws/credentials`
+* --profile = The aws profile to consume from your `~/.aws/credentials`
 * --compute = True enables counting compute resources
 * --network = True enables counting network resources
 * --paas = True enables counting paas resources
 * --security = True enables counting security resources
 * --storage = True enables counting storage resources
-* --s3objects = True enables counting s3 objects in buckets (separate because of high api cost)
+* --s3objects = True enables counting s3 objects in buckets, default = false
+* --sgRules = True enables counting sg rules, default = false
+* --naclRules = True enables counting nacl rules, default = false
 
 The script defaults to disabling all of the above
 
