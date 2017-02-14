@@ -23,15 +23,27 @@ profile = args.profile
 #compute
 def aws_compute(aws,regions):
     "This kicks off all compute inventory functions"
-    ec2_instances(aws,regions)
+    #ec2_instances(aws,regions)
+    ecs_clusters(aws,regions)
 
 def ec2_instances(aws,regions):
     "This prints out count of ec2 instances on an account"
     for region in regions:
-        print("ec2.instances.{}:".format(region),sum(1 for _ in boto3.session.Session(profile_name=profile,region_name=region).resource('ec2').instances.filter(Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])))
+        try:
+            print("ec2.instances.{}:".format(region),sum(1 for _ in boto3.session.Session(profile_name=profile,region_name=region).resource('ec2').instances.filter(Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])))
+        except:
+            print("ec2.instances.{}: none")
     return
 
-## ecs
+def ecs_clusters(aws,regions):
+    "Prints out a count of clusters"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('ecs').list_clusters()
+            print("ecs.clusters.{}:".format(region),len(response["clusterArns"]))
+        except:
+            print("ecs.clusters.{}: unsupported".format(region))
+    return
 ## asg
 ## lambda
 ## elb
@@ -40,12 +52,26 @@ def ec2_instances(aws,regions):
 #storage
 def aws_storage(aws):
     "This kicks off all storage inventory functions"
+    ebs_volumes(aws,regions)
     efs_filesystems(aws)
     s3_buckets(aws)
     if args.s3objects:
         s3_objects(aws)
 
-## ebs
+def ebs_volumes(aws,regions):
+    "Prints count of ebs volumes"
+    try:
+        for region in regions:
+            ec2volumes = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_volumes().get('Volumes',[])
+            volumes = sum(
+                [
+                    [i for i in r['Attachments']]
+                    for r in ec2volumes
+                ], [])
+            print("ebs.volumes.{}:".format(region),len(volumes))
+    except:
+        print("ebs.volumes.{}: none".format(region))
+    return
 
 def efs_filesystems(aws):
     "This prints count of efs file systems on account"
@@ -98,5 +124,5 @@ def s3_objects(aws):
 if __name__ == '__main__':
     aws = boto3.session.Session(profile_name=profile)
     regions = [region['RegionName'] for region in aws.client('ec2').describe_regions()['Regions']]
-    aws_storage(aws)
+    #aws_storage(aws)
     aws_compute(aws,regions)
