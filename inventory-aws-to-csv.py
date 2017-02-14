@@ -7,20 +7,22 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--profile", help="specify aws profile to use")
+
+# Logical groupings
+parser.add_argument("--compute", type=bool, default=False, help="True enables counting compute resources
+parser.add_argument("--network", type=bool, default=False, help="True enables counting network resources
+parser.add_argument("--paas", type=bool, default=False, help="True enables counting paas resources
+parser.add_argument("--security", type=bool, default=False, help="True enables counting security resources
+parser.add_argument("--storage", type=bool, default=False, help="True enables counting storage resources")
+
+# Specific api intensive modules
 parser.add_argument("--s3objects", type=bool, default=False, help="True enables counting s3 objects, default = false")
-parser.add_argument("--volume_size", type=bool, help="returns volume sizes if true")
-parser.add_argument("--region", help="specify region to report on")
-parser.add_argument("--globals", type=bool, help="returns global data if true")
+
 args = parser.parse_args()
 profile = args.profile
 
-#network
-## vpc
-## vpn
-## route tables
-## subnets
 
-#compute
+# COMPUTE
 def aws_compute(aws,regions):
     "This kicks off all compute inventory functions"
     ec2_instances(aws,regions)
@@ -90,8 +92,38 @@ def application_loadbalancers(aws,regions):
     return
 
 
-#storage
-def aws_storage(aws):
+# NETWORK
+def aws_network(aws,regions):
+    "This kicks off all network inventory functions"
+
+## vpc
+## vpn
+## route tables
+## subnets
+
+
+# PAAS
+def aws_paas(aws,regions):
+    "This kicks off all paas inventory functions"
+## cloudfront count
+## elk count
+## rds
+## aurora
+## dynamodb
+
+
+# SECURITY
+def aws_security(aws,regions):
+    "This kicks off all security inventory functions"
+## sg count
+## sg rules
+## nacl count
+## nacl rules
+## waf count
+
+
+# STORAGE
+def aws_storage(aws,regions):
     "This kicks off all storage inventory functions"
     ebs_volumes(aws,regions)
     efs_filesystems(aws)
@@ -147,23 +179,19 @@ def s3_objects(aws):
             print("s3.bucket.{}.objects: none".format(bucket_name["Name"]))
     return
 
-#paas
-## cloudfront count
-## elk count
-## rds
-## aurora
-## dynamodb
 
-#security
-## sg count
-## sg rules
-## nacl count
-## nacl rules
-## waf count
-
-
+# If ran directly this will start everything
 if __name__ == '__main__':
     aws = boto3.session.Session(profile_name=profile)
     regions = [region['RegionName'] for region in aws.client('ec2').describe_regions()['Regions']]
-    #aws_storage(aws)
-    aws_compute(aws,regions)
+
+    if args.compute:
+        aws_compute(aws,regions)
+    if args.network:
+        aws_network(aws,regions)
+    if args.paas:
+        aws_paas(aws,regions)
+    if args.security:
+        aws_security(aws,regions)
+    if args.storage:
+        aws_storage(aws,regions)
