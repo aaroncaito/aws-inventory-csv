@@ -95,11 +95,50 @@ def application_loadbalancers(aws,regions):
 # NETWORK
 def aws_network(aws,regions):
     "This kicks off all network inventory functions"
+    vpcs(aws,regions)
+    vpns(aws,regions)
+    route_tables(aws,regions)
+    subnets(aws,regions)
 
-## vpc
-## vpn
-## route tables
-## subnets
+def vpcs(aws,regions):
+    "Prints count of vpcs"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_vpcs()
+            print("vpc.{}:".format(region), len(response["Vpcs"]))
+        except:
+            print("vpc.{}: unsupported".format(region))
+    return
+
+def vpns(aws,regions):
+    "Prints count of vpns"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_vpn_connections()
+            print("vpn.{}:".format(region), len(response["VpnConnections"]))
+        except:
+            print("vpn.{}: unsupported".format(region))
+    return
+
+def route_tables(aws,regions):
+    "Prints count of route tables"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_route_tables()
+            print("route_tables.{}:".format(region), len(response["RouteTables"]))
+        except:
+            print("route_tables.{}: unsupported".format(region))
+    return
+
+def subnets(aws,regions):
+    "Prints count of route tables"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_subnets()
+            print("subnets.{}:".format(region), len(response["Subnets"]))
+        except:
+            print("subnets.{}: unsupported".format(region))
+    return
 
 
 # PAAS
