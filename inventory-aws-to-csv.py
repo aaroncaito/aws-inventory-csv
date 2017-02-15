@@ -36,62 +36,75 @@ def aws_compute(aws,regions):
 
 def ec2_instances(aws,regions):
     "This prints out count of ec2 instances on an account"
+    i = 0
     for region in regions:
         try:
-            print("ec2.instances.{}:".format(region),sum(1 for _ in boto3.session.Session(profile_name=profile,region_name=region).resource('ec2').instances.filter(Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])))
+            j = sum(1 for _ in boto3.session.Session(profile_name=profile,region_name=region).resource('ec2').instances.filter(Filters=[{'Name': 'instance-state-name', 'Values': ['running']}]))
+            i += j
+            print("ec2.instances.{}:".format(region),j)
         except:
             print("ec2.instances.{}: none")
-    return
+    return i
 
 def ecs_clusters(aws,regions):
     "Prints out a count of clusters"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('ecs').list_clusters()
-            print("ecs.clusters.{}:".format(region),len(response["clusterArns"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('ecs').list_clusters()["clusterArns"])
+            i += j
+            print("ecs.clusters.{}:".format(region),j)
         except:
             print("ecs.clusters.{}: unsupported".format(region))
-    return
+    return i
 
 def auto_scaling_groups(aws,regions):
     "Prints out a count of autoscale groups"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('autoscaling').describe_auto_scaling_groups()
-            print("asg.groups.{}:".format(region), len(response["AutoScalingGroups"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('autoscaling').describe_auto_scaling_groups()["AutoScalingGroups"])
+            i += j
+            print("asg.groups.{}:".format(region),j)
         except:
             print("asg.groups.{}: none".format(region))
-    return
+    return i
 
 def lambda_functions(aws,regions):
     "Prints count of lambda functions"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('lambda').list_functions()
-            print("lambda.functions.{}:".format(region), len(response["Functions"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('lambda').list_functions()["Functions"])
+            i += j
+            print("lambda.functions.{}:".format(region),j)
         except:
             print("lambda.functions.{}: unsupported".format(region))
-    return
+    return i
 
 def elastic_loadbalancers(aws,regions):
     "Prints count of classic elb"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('elb').describe_load_balancers()
-            print("elb.{}:".format(region), len(response["LoadBalancerDescriptions"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('elb').describe_load_balancers()["LoadBalancerDescriptions"])
+            i += j
+            print("elb.{}:".format(region),j)
         except:
             print("elb.{}: unsupported".format(region))
-    return
+    return i
 
 def application_loadbalancers(aws,regions):
     "Prints count of alb"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('elbv2').describe_load_balancers()
-            print("alb.{}:".format(region), len(response["LoadBalancers"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('elbv2').describe_load_balancers()["LoadBalancers"])
+            i += j
+            print("alb.{}:".format(region),j)
         except:
             print("alb.{}: unsupported".format(region))
-    return
+    return i
 
 
 # NETWORK
@@ -104,43 +117,51 @@ def aws_network(aws,regions):
 
 def vpcs(aws,regions):
     "Prints count of vpcs"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_vpcs()
-            print("vpc.{}:".format(region), len(response["Vpcs"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_vpcs()["Vpcs"])
+            i += j
+            print("vpc.{}:".format(region),j)
         except:
             print("vpc.{}: unsupported".format(region))
-    return
+    return i
 
 def vpns(aws,regions):
     "Prints count of vpns"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_vpn_connections()
-            print("vpn.{}:".format(region), len(response["VpnConnections"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_vpn_connections()["VpnConnections"])
+            i += j
+            print("vpn.{}:".format(region),j)
         except:
             print("vpn.{}: unsupported".format(region))
-    return
+    return i
 
 def route_tables(aws,regions):
     "Prints count of route tables"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_route_tables()
-            print("route_tables.{}:".format(region), len(response["RouteTables"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_route_tables()["RouteTables"])
+            i += j
+            print("route_tables.{}:".format(region),j)
         except:
             print("route_tables.{}: unsupported".format(region))
-    return
+    return i
 
 def subnets(aws,regions):
     "Prints count of subnets"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_subnets()
-            print("subnets.{}:".format(region), len(response["Subnets"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_subnets()["Subnets"])
+            i += j
+            print("subnets.{}:".format(region),j)
         except:
             print("subnets.{}: unsupported".format(region))
-    return
+    return i
 
 
 # PAAS
@@ -154,49 +175,55 @@ def aws_paas(aws,regions):
 
 def cf_distributions(aws):
     "Prints count of cloudfront distributions"
+    j = 0
     try:
-        response = boto3.session.Session(profile_name=profile).client('cloudfront').list_distributions()["DistributionList"]
-        print("cf_distributions:", len(response["Items"]))
+        j = len(boto3.session.Session(profile_name=profile).client('cloudfront').list_distributions()["DistributionList"]["Items"])
+        print("cf_distributions:",j)
     except:
         print("cf_distributions: unsupported")
-    return
+    return j
 
 def elastic_search(aws):
     "Prints count of elastic search clusters"
+    j = 0
     try:
-        response = boto3.session.Session(profile_name=profile).client('es').list_domain_names()
-        print("es.clusters:", len(response["DomainNames"]))
+        j = len(boto3.session.Session(profile_name=profile).client('es').list_domain_names()["DomainNames"])
+        print("es.clusters:",j)
     except:
         print("es.clusters: unsupported")
-    return
+    return j
 
 def aurora_clusters(aws):
     "Prints count of aurora clusters"
+    j = 0
     try:
-        response = boto3.session.Session(profile_name=profile).client('rds').describe_db_clusters()
-        print("rds.aurora.clusters:", len(response["DBClusters"]))
+        j = len(boto3.session.Session(profile_name=profile).client('rds').describe_db_clusters()["DBClusters"])
+        print("rds.aurora.clusters:",j)
     except:
         print("rds.aurora.clusters: unsupported")
-    return
+    return j
 
 def rds_instances(aws,regions):
     "Prints count of rds instances"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('rds').describe_db_instances()
-            print("rds.instances.{}:".format(region), len(response["DBInstances"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('rds').describe_db_instances()["DBInstances"])
+            i += j
+            print("rds.instances.{}:".format(region),j)
         except:
             print("rds.instances.{}: unsupported".format(region))
-    return
+    return i
 
 def dynamo_db(aws):
     "Prints count of dynamo databases"
+    j = 0
     try:
-        response = boto3.session.Session(profile_name=profile).client('dynamodb').list_tables()
-        print("dynamodb.tables:", len(response["TableNames"]))
+        j = len(boto3.session.Session(profile_name=profile).client('dynamodb').list_tables()["TableNames"])
+        print("dynamodb.tables:",j)
     except:
         print("dynamodb.tables: unsupported")
-    return
+    return j
 
 
 # SECURITY
@@ -212,59 +239,69 @@ def aws_security(aws,regions):
 
 def security_groups(aws,regions):
     "Prints count of security groups"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_security_groups()
-            print("sg.{}:".format(region), len(response["SecurityGroups"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_security_groups()["SecurityGroups"])
+            i += j
+            print("sg.{}:".format(region),j)
         except:
             print("sg.{}: unsupported".format(region))
-    return
+    return i
 
 def security_group_rules(aws,regions):
     "Prints count of security groups"
+    i = 0
     for region in regions:
         try:
             response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_security_groups()
-            count = 0
+            j = 0
             for sg in response["SecurityGroups"]:
-                count += (len(sg["IpPermissions"]) + len(sg["IpPermissionsEgress"]))
-            print("sg.rules.{}:".format(region), count)
+                j += (len(sg["IpPermissions"]) + len(sg["IpPermissionsEgress"]))
+            i += j
+            print("sg.rules.{}:".format(region),j)
         except:
             print("sg.rules.{}: unsupported".format(region))
-    return
+    return i
 
 def nacls(aws,regions):
     "Prints count of nacls"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_network_acls()
-            print("nacl.{}:".format(region), len(response["NetworkAcls"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_network_acls()["NetworkAcls"])
+            i += j
+            print("nacl.{}:".format(region),j)
         except:
             print("nacl.{}: unsupported".format(region))
-    return
+    return i
 
 def nacl_rules(aws,regions):
     "Prints count of security groups"
+    i = 0
     for region in regions:
         try:
             response = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_network_acls()
-            count = 0
+            j = 0
             for nacl in response["NetworkAcls"]:
-                count += len(nacl["Entries"])
-            print("nacl.rules.{}:".format(region), count)
+                j += len(nacl["Entries"])
+            i += j
+            print("nacl.rules.{}:".format(region),j)
         except:
             print("nacl.rules.{}: unsupported".format(region))
-    return
+    return i
 
 def wafs(aws,regions):
     "Prints count of wafs"
+    i = 0
     for region in regions:
         try:
-            response = boto3.session.Session(profile_name=profile,region_name=region).client('waf').list_web_acls()
-            print("waf.{}:".format(region), len(response["WebACLs"]))
+            j = len(boto3.session.Session(profile_name=profile,region_name=region).client('waf').list_web_acls()["WebACLs"])
+            i += j
+            print("waf.{}:".format(region),j)
         except:
             print("waf.{}: unsupported".format(region))
-    return
+    return i
 
 
 # STORAGE
@@ -278,51 +315,54 @@ def aws_storage(aws,regions):
 
 def ebs_volumes(aws,regions):
     "Prints count of ebs volumes"
+    i = 0
     try:
         for region in regions:
             ec2volumes = boto3.session.Session(profile_name=profile,region_name=region).client('ec2').describe_volumes().get('Volumes',[])
-            volumes = sum(
+            j = len(sum(
                 [
                     [i for i in r['Attachments']]
                     for r in ec2volumes
-                ], [])
-            print("ebs.volumes.{}:".format(region),len(volumes))
+                ], []))
+            i += j
+            print("ebs.volumes.{}:".format(region),j)
     except:
         print("ebs.volumes.{}: none".format(region))
-    return
+    return i
 
 def efs_filesystems(aws):
     "This prints count of efs file systems on account"
-    efsclient = aws.client('efs')
+    i = 0
     try:
-        response = efsclient.describe_file_systems()
-        print("efs.filesystem.count:", len(response['FileSystems']))
+        j = len(boto3.session.Session(profile_name=profile).client('efs').describe_file_systems()['FileSystems'])
+        i += j
+        print("efs.filesystem.count:",j)
     except:
         print("efs.filesystem.count: none")
-    return
+    return i
 
 def s3_buckets(aws):
     "This prints a count of buckets on an account"
-    s3client = aws.client('s3')
+    i = 0
     try:
-        response = s3client.list_buckets()
-        print("s3.bucket.count:", len(response["Buckets"]))
+        j = len(boto3.session.Session(profile_name=profile).client('s3').list_buckets()["Buckets"])
+        i += j
+        print("s3.bucket.count:",j)
     except:
         print("s3.bucket.count: none")
-    return
+    return i
 
 def s3_objects(aws):
     "This prints object counts for all buckets of account"
-    s3 = aws.resource('s3')
-    s3client = aws.client('s3')
-    response = s3client.list_buckets()
-    for bucket_name in response["Buckets"]:
+    i = 0
+    for bucket_name in boto3.session.Session(profile_name=profile).client('s3').list_buckets()["Buckets"]:
         try:
-            bucket = s3.Bucket(bucket_name["Name"])
-            print("s3.bucket.{}.objects:".format(bucket_name["Name"]),sum(1 for _ in bucket.objects.all()))
+            j = sum(1 for _ in boto3.session.Session(profile_name=profile).resource('s3').Bucket(bucket_name["Name"]).objects.all())
+            i += j
+            print("s3.bucket.{}.objects:".format(bucket_name["Name"]),j)
         except:
             print("s3.bucket.{}.objects: none".format(bucket_name["Name"]))
-    return
+    return i
 
 
 # If ran directly this will start everything
