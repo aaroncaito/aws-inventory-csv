@@ -147,6 +147,10 @@ def subnets(aws,regions):
 def aws_paas(aws,regions):
     "This kicks off all paas inventory functions"
     cf_distributions(aws)
+    elastic_search(aws)
+    aurora_clusters(aws)
+    rds_instances(aws,regions)
+    dynamo_db(aws)
 
 def cf_distributions(aws):
     "Prints count of cloudfront distributions"
@@ -154,13 +158,45 @@ def cf_distributions(aws):
         response = boto3.session.Session(profile_name=profile).client('cloudfront').list_distributions()["DistributionList"]
         print("cf_distributions:", len(response["Items"]))
     except:
-        print("cf_distributions.{}: unsupported".format(region))
+        print("cf_distributions: unsupported")
     return
 
-## elk count
-## rds
-## aurora
-## dynamodb
+def elastic_search(aws):
+    "Prints count of elastic search clusters"
+    try:
+        response = boto3.session.Session(profile_name=profile).client('es').list_domain_names()
+        print("es.clusters:", len(response["DomainNames"]))
+    except:
+        print("es.clusters: unsupported")
+    return
+
+def aurora_clusters(aws):
+    "Prints count of aurora clusters"
+    try:
+        response = boto3.session.Session(profile_name=profile).client('rds').describe_db_clusters()
+        print("rds.aurora.clusters:", len(response["DBClusters"]))
+    except:
+        print("rds.aurora.clusters: unsupported")
+    return
+
+def rds_instances(aws,regions):
+    "Prints count of rds instances"
+    for region in regions:
+        try:
+            response = boto3.session.Session(profile_name=profile,region_name=region).client('rds').describe_db_instances()
+            print("rds.instances.{}:".format(region), len(response["DBInstances"]))
+        except:
+            print("rds.instances.{}: unsupported".format(region))
+    return
+
+def dynamo_db(aws):
+    "Prints count of dynamo databases"
+    try:
+        response = boto3.session.Session(profile_name=profile).client('dynamodb').list_tables()
+        print("dynamodb.tables:", len(response["TableNames"]))
+    except:
+        print("dynamodb.tables: unsupported")
+    return
 
 
 # SECURITY
