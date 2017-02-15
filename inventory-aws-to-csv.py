@@ -27,12 +27,12 @@ profile = args.profile
 # COMPUTE
 def aws_compute(regions):
     "This kicks off all compute inventory functions"
-    ec2_instances(regions)
-    ecs_clusters(regions)
-    auto_scaling_groups(regions)
-    lambda_functions(regions)
-    elastic_loadbalancers(regions)
-    application_loadbalancers(regions)
+    aws_inventory["ec2_instances"]             = ec2_instances(regions)
+    aws_inventory["ecs_clusters"]              = ecs_clusters(regions)
+    aws_inventory["auto_scaling_groups"]       = auto_scaling_groups(regions)
+    aws_inventory["lambda_functions"]          = lambda_functions(regions)
+    aws_inventory["elastic_loadbalancers"]     = elastic_loadbalancers(regions)
+    aws_inventory["application_loadbalancers"] = application_loadbalancers(regions)
 
 def ec2_instances(regions):
     "This prints out count of ec2 instances on an account"
@@ -110,10 +110,10 @@ def application_loadbalancers(regions):
 # NETWORK
 def aws_network(regions):
     "This kicks off all network inventory functions"
-    vpcs(regions)
-    vpns(regions)
-    route_tables(regions)
-    subnets(regions)
+    aws_inventory["vpcs"] =         vpcs(regions)
+    aws_inventory["vpns"] =         vpns(regions)
+    aws_inventory["route_tables"] = route_tables(regions)
+    aws_inventory["subnets"] =      subnets(regions)
 
 def vpcs(regions):
     "Prints count of vpcs"
@@ -167,11 +167,11 @@ def subnets(regions):
 # PAAS
 def aws_paas(regions):
     "This kicks off all paas inventory functions"
-    cf_distributions()
-    elastic_search()
-    aurora_clusters()
-    rds_instances(regions)
-    dynamo_db()
+    aws_inventory["cf_distributions"] = cf_distributions()
+    aws_inventory["elastic_search"] = elastic_search()
+    aws_inventory["aurora_clusters"] = aurora_clusters()
+    aws_inventory["rds_instances"] = rds_instances(regions)
+    aws_inventory["dynamo_db"] = dynamo_db()
 
 def cf_distributions():
     "Prints count of cloudfront distributions"
@@ -229,13 +229,13 @@ def dynamo_db():
 # SECURITY
 def aws_security(regions):
     "This kicks off all security inventory functions"
-    security_groups(regions)
+    aws_inventory["security_groups"]          = security_groups(regions)
     if args.sgRules:
-        security_group_rules(regions)
-    nacls(regions)
+        aws_inventory["security_group_rules"] = security_group_rules(regions)
+    aws_inventory["nacls"]                    = nacls(regions)
     if args.naclRules:
-        nacl_rules(regions)
-    wafs(regions)
+        aws_inventory["nacl_rules"]           = nacl_rules(regions)
+    aws_inventory["wafs"]                     = wafs(regions)
 
 def security_groups(regions):
     "Prints count of security groups"
@@ -307,11 +307,11 @@ def wafs(regions):
 # STORAGE
 def aws_storage(regions):
     "This kicks off all storage inventory functions"
-    ebs_volumes(regions)
-    efs_filesystems()
-    s3_buckets()
+    aws_inventory["ebs_volumes"]     = ebs_volumes(regions)
+    aws_inventory["efs_filesystems"] = efs_filesystems()
+    aws_inventory["s3_buckets"]      = s3_buckets()
     if args.s3Objects:
-        s3_objects()
+        aws_inventory["s3_objects"]  = s3_objects()
 
 def ebs_volumes(regions):
     "Prints count of ebs volumes"
@@ -368,6 +368,7 @@ def s3_objects():
 # If ran directly this will start everything
 if __name__ == '__main__':
     regions = [region['RegionName'] for region in boto3.session.Session(profile_name=profile).client('ec2').describe_regions()['Regions']]
+    aws_inventory = dict([])
 
     # Run components by logical group
     if args.compute:
@@ -380,3 +381,5 @@ if __name__ == '__main__':
         aws_security(regions)
     if args.storage:
         aws_storage(regions)
+
+    print(aws_inventory)
