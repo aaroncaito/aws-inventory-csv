@@ -25,16 +25,16 @@ profile = args.profile
 
 
 # COMPUTE
-def aws_compute(aws,regions):
+def aws_compute(regions):
     "This kicks off all compute inventory functions"
-    ec2_instances(aws,regions)
-    ecs_clusters(aws,regions)
-    auto_scaling_groups(aws,regions)
-    lambda_functions(aws,regions)
-    elastic_loadbalancers(aws,regions)
-    application_loadbalancers(aws,regions)
+    ec2_instances(regions)
+    ecs_clusters(regions)
+    auto_scaling_groups(regions)
+    lambda_functions(regions)
+    elastic_loadbalancers(regions)
+    application_loadbalancers(regions)
 
-def ec2_instances(aws,regions):
+def ec2_instances(regions):
     "This prints out count of ec2 instances on an account"
     i = 0
     for region in regions:
@@ -46,7 +46,7 @@ def ec2_instances(aws,regions):
             print("ec2.instances.{}: none")
     return i
 
-def ecs_clusters(aws,regions):
+def ecs_clusters(regions):
     "Prints out a count of clusters"
     i = 0
     for region in regions:
@@ -58,7 +58,7 @@ def ecs_clusters(aws,regions):
             print("ecs.clusters.{}: unsupported".format(region))
     return i
 
-def auto_scaling_groups(aws,regions):
+def auto_scaling_groups(regions):
     "Prints out a count of autoscale groups"
     i = 0
     for region in regions:
@@ -70,7 +70,7 @@ def auto_scaling_groups(aws,regions):
             print("asg.groups.{}: none".format(region))
     return i
 
-def lambda_functions(aws,regions):
+def lambda_functions(regions):
     "Prints count of lambda functions"
     i = 0
     for region in regions:
@@ -82,7 +82,7 @@ def lambda_functions(aws,regions):
             print("lambda.functions.{}: unsupported".format(region))
     return i
 
-def elastic_loadbalancers(aws,regions):
+def elastic_loadbalancers(regions):
     "Prints count of classic elb"
     i = 0
     for region in regions:
@@ -94,7 +94,7 @@ def elastic_loadbalancers(aws,regions):
             print("elb.{}: unsupported".format(region))
     return i
 
-def application_loadbalancers(aws,regions):
+def application_loadbalancers(regions):
     "Prints count of alb"
     i = 0
     for region in regions:
@@ -108,14 +108,14 @@ def application_loadbalancers(aws,regions):
 
 
 # NETWORK
-def aws_network(aws,regions):
+def aws_network(regions):
     "This kicks off all network inventory functions"
-    vpcs(aws,regions)
-    vpns(aws,regions)
-    route_tables(aws,regions)
-    subnets(aws,regions)
+    vpcs(regions)
+    vpns(regions)
+    route_tables(regions)
+    subnets(regions)
 
-def vpcs(aws,regions):
+def vpcs(regions):
     "Prints count of vpcs"
     i = 0
     for region in regions:
@@ -127,7 +127,7 @@ def vpcs(aws,regions):
             print("vpc.{}: unsupported".format(region))
     return i
 
-def vpns(aws,regions):
+def vpns(regions):
     "Prints count of vpns"
     i = 0
     for region in regions:
@@ -139,7 +139,7 @@ def vpns(aws,regions):
             print("vpn.{}: unsupported".format(region))
     return i
 
-def route_tables(aws,regions):
+def route_tables(regions):
     "Prints count of route tables"
     i = 0
     for region in regions:
@@ -151,7 +151,7 @@ def route_tables(aws,regions):
             print("route_tables.{}: unsupported".format(region))
     return i
 
-def subnets(aws,regions):
+def subnets(regions):
     "Prints count of subnets"
     i = 0
     for region in regions:
@@ -165,15 +165,15 @@ def subnets(aws,regions):
 
 
 # PAAS
-def aws_paas(aws,regions):
+def aws_paas(regions):
     "This kicks off all paas inventory functions"
-    cf_distributions(aws)
-    elastic_search(aws)
-    aurora_clusters(aws)
-    rds_instances(aws,regions)
-    dynamo_db(aws)
+    cf_distributions()
+    elastic_search()
+    aurora_clusters()
+    rds_instances(regions)
+    dynamo_db()
 
-def cf_distributions(aws):
+def cf_distributions():
     "Prints count of cloudfront distributions"
     j = 0
     try:
@@ -183,7 +183,7 @@ def cf_distributions(aws):
         print("cf_distributions: unsupported")
     return j
 
-def elastic_search(aws):
+def elastic_search():
     "Prints count of elastic search clusters"
     j = 0
     try:
@@ -193,7 +193,7 @@ def elastic_search(aws):
         print("es.clusters: unsupported")
     return j
 
-def aurora_clusters(aws):
+def aurora_clusters():
     "Prints count of aurora clusters"
     j = 0
     try:
@@ -203,7 +203,7 @@ def aurora_clusters(aws):
         print("rds.aurora.clusters: unsupported")
     return j
 
-def rds_instances(aws,regions):
+def rds_instances(regions):
     "Prints count of rds instances"
     i = 0
     for region in regions:
@@ -215,7 +215,7 @@ def rds_instances(aws,regions):
             print("rds.instances.{}: unsupported".format(region))
     return i
 
-def dynamo_db(aws):
+def dynamo_db():
     "Prints count of dynamo databases"
     j = 0
     try:
@@ -227,17 +227,17 @@ def dynamo_db(aws):
 
 
 # SECURITY
-def aws_security(aws,regions):
+def aws_security(regions):
     "This kicks off all security inventory functions"
-    security_groups(aws,regions)
+    security_groups(regions)
     if args.sgRules:
-        security_group_rules(aws,regions)
-    nacls(aws,regions)
+        security_group_rules(regions)
+    nacls(regions)
     if args.naclRules:
-        nacl_rules(aws,regions)
-    wafs(aws,regions)
+        nacl_rules(regions)
+    wafs(regions)
 
-def security_groups(aws,regions):
+def security_groups(regions):
     "Prints count of security groups"
     i = 0
     for region in regions:
@@ -249,7 +249,7 @@ def security_groups(aws,regions):
             print("sg.{}: unsupported".format(region))
     return i
 
-def security_group_rules(aws,regions):
+def security_group_rules(regions):
     "Prints count of security groups"
     i = 0
     for region in regions:
@@ -264,7 +264,7 @@ def security_group_rules(aws,regions):
             print("sg.rules.{}: unsupported".format(region))
     return i
 
-def nacls(aws,regions):
+def nacls(regions):
     "Prints count of nacls"
     i = 0
     for region in regions:
@@ -276,7 +276,7 @@ def nacls(aws,regions):
             print("nacl.{}: unsupported".format(region))
     return i
 
-def nacl_rules(aws,regions):
+def nacl_rules(regions):
     "Prints count of security groups"
     i = 0
     for region in regions:
@@ -291,7 +291,7 @@ def nacl_rules(aws,regions):
             print("nacl.rules.{}: unsupported".format(region))
     return i
 
-def wafs(aws,regions):
+def wafs(regions):
     "Prints count of wafs"
     i = 0
     for region in regions:
@@ -305,15 +305,15 @@ def wafs(aws,regions):
 
 
 # STORAGE
-def aws_storage(aws,regions):
+def aws_storage(regions):
     "This kicks off all storage inventory functions"
-    ebs_volumes(aws,regions)
-    efs_filesystems(aws)
-    s3_buckets(aws)
+    ebs_volumes(regions)
+    efs_filesystems()
+    s3_buckets()
     if args.s3Objects:
-        s3_objects(aws)
+        s3_objects()
 
-def ebs_volumes(aws,regions):
+def ebs_volumes(regions):
     "Prints count of ebs volumes"
     i = 0
     try:
@@ -330,7 +330,7 @@ def ebs_volumes(aws,regions):
         print("ebs.volumes.{}: none".format(region))
     return i
 
-def efs_filesystems(aws):
+def efs_filesystems():
     "This prints count of efs file systems on account"
     i = 0
     try:
@@ -341,7 +341,7 @@ def efs_filesystems(aws):
         print("efs.filesystem.count: none")
     return i
 
-def s3_buckets(aws):
+def s3_buckets():
     "This prints a count of buckets on an account"
     i = 0
     try:
@@ -352,7 +352,7 @@ def s3_buckets(aws):
         print("s3.bucket.count: none")
     return i
 
-def s3_objects(aws):
+def s3_objects():
     "This prints object counts for all buckets of account"
     i = 0
     for bucket_name in boto3.session.Session(profile_name=profile).client('s3').list_buckets()["Buckets"]:
@@ -367,16 +367,16 @@ def s3_objects(aws):
 
 # If ran directly this will start everything
 if __name__ == '__main__':
-    aws = boto3.session.Session(profile_name=profile)
-    regions = [region['RegionName'] for region in aws.client('ec2').describe_regions()['Regions']]
+    regions = [region['RegionName'] for region in boto3.session.Session(profile_name=profile).client('ec2').describe_regions()['Regions']]
 
+    # Run components by logical group
     if args.compute:
-        aws_compute(aws,regions)
+        aws_compute(regions)
     if args.network:
-        aws_network(aws,regions)
+        aws_network(regions)
     if args.paas:
-        aws_paas(aws,regions)
+        aws_paas(regions)
     if args.security:
-        aws_security(aws,regions)
+        aws_security(regions)
     if args.storage:
-        aws_storage(aws,regions)
+        aws_storage(regions)
