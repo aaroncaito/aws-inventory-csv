@@ -8,6 +8,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--profile", help="specify aws profile to use")
 parser.add_argument("--out_file", help="csv file to create")
+parser.add_argument("--csv_test", type=bool, default=False, help="generate sample csv file")
 
 # Logical groupings
 parser.add_argument("--compute", type=bool, default=False, help="True enables counting compute resources")
@@ -384,8 +385,8 @@ if __name__ == '__main__':
         if args.storage:
             aws_storage(regions)
 
-    aws_inventory = {'elastic_loadbalancers': 0, 'subnets': 34, 'nacls': 12, 'security_groups': 21, 'aurora_clusters': 0, 'rds_instances': 0, 'ec2_instances': 0, 'dynamo_db': 0, 'wafs': 0, 'vpns': 0, 's3_buckets': 17, 'application_loadbalancers': 0, 'auto_scaling_groups': 0, 'vpcs': 12, 'elastic_search': 0, 'lambda_functions': 0, 'ecs_clusters': 0, 'route_tables': 14, 'cf_distributions': 0, 'efs_filesystems': 0, 'ebs_volumes': 0}
-    print(aws_inventory)
+    if args.csv_test:
+        aws_inventory = {'elastic_loadbalancers': 0, 'subnets': 34, 'nacls': 12, 'security_groups': 21, 'aurora_clusters': 0, 'rds_instances': 0, 'ec2_instances': 0, 'dynamo_db': 0, 'wafs': 0, 'vpns': 0, 's3_buckets': 17, 'application_loadbalancers': 0, 'auto_scaling_groups': 0, 'vpcs': 12, 'elastic_search': 0, 'lambda_functions': 0, 'ecs_clusters': 0, 'route_tables': 14, 'cf_distributions': 0, 'efs_filesystems': 0, 'ebs_volumes': 0}
 
     if args.out_file:
         with open(args.out_file, 'w+') as csvfile:
