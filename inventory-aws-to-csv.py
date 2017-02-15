@@ -7,6 +7,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--profile", help="specify aws profile to use")
+parser.add_argument("--out_file", help="csv file to create")
 
 # Logical groupings
 parser.add_argument("--compute", type=bool, default=False, help="True enables counting compute resources")
@@ -367,19 +368,28 @@ def s3_objects():
 
 # If ran directly this will start everything
 if __name__ == '__main__':
-    regions = [region['RegionName'] for region in boto3.session.Session(profile_name=profile).client('ec2').describe_regions()['Regions']]
     aws_inventory = dict([])
 
-    # Run components by logical group
-    if args.compute:
-        aws_compute(regions)
-    if args.network:
-        aws_network(regions)
-    if args.paas:
-        aws_paas(regions)
-    if args.security:
-        aws_security(regions)
-    if args.storage:
-        aws_storage(regions)
+    if args.profile:
+        regions = [region['RegionName'] for region in boto3.session.Session(profile_name=profile).client('ec2').describe_regions()['Regions']]
+        # Run components by logical group
+        if args.compute:
+            aws_compute(regions)
+        if args.network:
+            aws_network(regions)
+        if args.paas:
+            aws_paas(regions)
+        if args.security:
+            aws_security(regions)
+        if args.storage:
+            aws_storage(regions)
 
+    aws_inventory = {'elastic_loadbalancers': 0, 'subnets': 34, 'nacls': 12, 'security_groups': 21, 'aurora_clusters': 0, 'rds_instances': 0, 'ec2_instances': 0, 'dynamo_db': 0, 'wafs': 0, 'vpns': 0, 's3_buckets': 17, 'application_loadbalancers': 0, 'auto_scaling_groups': 0, 'vpcs': 12, 'elastic_search': 0, 'lambda_functions': 0, 'ecs_clusters': 0, 'route_tables': 14, 'cf_distributions': 0, 'efs_filesystems': 0, 'ebs_volumes': 0}
     print(aws_inventory)
+
+    if args.out_file:
+        with open(args.out_file, 'w+') as csvfile:
+            fieldnames = ['vpcs','vpns','route_tables','subnets','ec2_instances','ecs_clusters','auto_scaling_groups','lambda_functions','elastic_loadbalancers','application_loadbalancers','ebs_volumes','efs_filesystems','s3_buckets','s3_objects','security_groups','security_group_rules','nacls','nacl_rules','wafs','cf_distributions','elastic_search','aurora_clusters','rds_instances','dynamo_db']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerow(aws_inventory)
