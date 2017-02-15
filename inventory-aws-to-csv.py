@@ -16,7 +16,7 @@ parser.add_argument("--security", type=bool, default=False, help="True enables c
 parser.add_argument("--storage", type=bool, default=False, help="True enables counting storage resources")
 
 # Specific api intensive modules
-parser.add_argument("--s3objects", type=bool, default=False, help="True enables counting s3 objects, default = false")
+parser.add_argument("--s3Objects", type=bool, default=False, help="True enables counting s3 objects, default = false")
 parser.add_argument("--sgRules", type=bool, default=False, help="True enables counting sg rules, default = false")
 parser.add_argument("--naclRules", type=bool, default=False, help="True enables counting nacl rules, default = false")
 
@@ -273,7 +273,7 @@ def aws_storage(aws,regions):
     ebs_volumes(aws,regions)
     efs_filesystems(aws)
     s3_buckets(aws)
-    if args.s3objects:
+    if args.s3Objects:
         s3_objects(aws)
 
 def ebs_volumes(aws,regions):
