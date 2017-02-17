@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+# This script is to facilitate inventory reporting tooling
+__author__ = 'Aaron Caito'
+
 import boto3
 import csv
 import os
@@ -372,6 +375,13 @@ if __name__ == '__main__':
     aws_inventory = dict([])
     aws_sessions = dict([])
     if args.profile:
+        # Lets make a temporary keypair to use that does not require mfa
+        # create policy
+        # create user
+        # create keypair
+        # attach policy
+
+
         regions = [region['RegionName'] for region in boto3.session.Session(profile_name=profile).client('ec2').describe_regions()['Regions']]
         for region in regions:
             aws_sessions[region] = boto3.session.Session(profile_name=profile,region_name=region)
@@ -387,6 +397,8 @@ if __name__ == '__main__':
             aws_security(aws_sessions)
         if args.storage:
             aws_storage(aws_sessions)
+
+        # Lets destroy that temporary user / keypair /policy
 
     if args.csv_test:
         aws_inventory = {'elastic_loadbalancers': 0, 'subnets': 34, 'nacls': 12, 'security_groups': 21, 'aurora_clusters': 0, 'rds_instances': 0, 'ec2_instances': 0, 'dynamo_db': 0, 'wafs': 0, 'vpns': 0, 's3_buckets': 17, 'application_loadbalancers': 0, 'auto_scaling_groups': 0, 'vpcs': 12, 'elastic_search': 0, 'lambda_functions': 0, 'ecs_clusters': 0, 'route_tables': 14, 'cf_distributions': 0, 'efs_filesystems': 0, 'ebs_volumes': 0}
